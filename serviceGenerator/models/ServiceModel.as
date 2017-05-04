@@ -10,6 +10,9 @@ public class ServiceModel {
 
     public var requestsList:Vector.<RequestModel> = new <RequestModel>[];
 
+    public var ip:String = '0.0.0.0';
+    public var port:String = '8020';
+
 
     private var _imSelected:Boolean,
                 _myLinkDataModel:LinkData;
