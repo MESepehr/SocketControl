@@ -81,11 +81,11 @@ public class Main extends MovieClip
             {
                 var nameArea:String = functionSplitedNameArray[1] ;
                 var theServiceName:String = nameArea.substring(0,nameArea.indexOf('"'));
-                serviceTitleInput.text = theServiceName ;
+                if(serviceTitleInput.text.indexOf(theServiceName)==-1)
+                    serviceTitleInput.text = theServiceName ;
             }
             //var theServiceName:String = inputTF.text.replace(/\"functionName\"\:\s\"/gi,'pipi');
             inputTF.text = beautiFy(inputTF.text);
-            outPutTF.text = functionSplitedNameArray.toString() ;
         }
 
         private function deleteCurrentRequest(e:MouseEvent):void
@@ -133,8 +133,6 @@ public class Main extends MovieClip
             }
 
             serviceTitleInput.text = selectedService.title;
-            ipTF.text = selectedService.ip;
-            portTF.text = selectedService.port;
             serverIPPort.text = selectedService.ip+':'+selectedService.port ;
             inputTF.text = beautiFy(selectedService.requestsList[0].requestString);
             outPutTF.text = beautiFy(selectedService.requestsList[0].respondString);
