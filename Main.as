@@ -10,6 +10,7 @@ import contents.displayPages.DynamicLinks;
 import diagrams.instagram.DiagramLines;
 
 import flash.display.MovieClip;
+import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.text.TextField;
 
@@ -56,6 +57,8 @@ public class Main extends MovieClip
             inputTF.borderColor = 0x666666;
             outPutTF.borderColor = 0x666666;
 
+            inputTF.addEventListener(Event.CHANGE, beautyInput)
+
             saveButton.setUp('SAVE');
             saveButton.addEventListener(MouseEvent.CLICK, saveCurrentService);
 
@@ -70,6 +73,20 @@ public class Main extends MovieClip
             loadLastServices();
             initServices();
 		}
+
+        private function beautyInput(e:Event):void
+        {
+            var functionSplitedNameArray:Array = inputTF.text.split(/"functionName"[\s]*:[\s]*"/i);
+            if(functionSplitedNameArray.length>1)
+            {
+                var nameArea:String = functionSplitedNameArray[1] ;
+                var theServiceName:String = nameArea.substring(0,nameArea.indexOf('"'));
+                serviceTitleInput.text = theServiceName ;
+            }
+            //var theServiceName:String = inputTF.text.replace(/\"functionName\"\:\s\"/gi,'pipi');
+            inputTF.text = beautiFy(inputTF.text);
+            outPutTF.text = functionSplitedNameArray.toString() ;
+        }
 
         private function deleteCurrentRequest(e:MouseEvent):void
         {
@@ -116,6 +133,8 @@ public class Main extends MovieClip
             }
 
             serviceTitleInput.text = selectedService.title;
+            ipTF.text = selectedService.ip;
+            portTF.text = selectedService.port;
             serverIPPort.text = selectedService.ip+':'+selectedService.port ;
             inputTF.text = beautiFy(selectedService.requestsList[0].requestString);
             outPutTF.text = beautiFy(selectedService.requestsList[0].respondString);
@@ -124,20 +143,27 @@ public class Main extends MovieClip
             /**Returns beautify json model if it can*/
             private function beautiFy(jsonModel:String):String
             {
+                const endOfFileLable:String = "[eof]" ;
+                var eofRemoved:Boolean = false ;
+                if(jsonModel.indexOf(endOfFileLable)!=-1)
+                {
+                    eofRemoved = true ;
+                    jsonModel = jsonModel.replace(endOfFileLable,'');
+                }
                 if(jsonModel=='')
                 {
                     return '' ;
                 }
                 try
                 {
-                    var jsonObject:Object = JSON.stringify(jsonModel);
-                    return JSON.stringify(jsonObject,null,'\t');
+                    var jsonObject:Object = JSON.parse(jsonModel);
+                    return JSON.stringify(jsonObject,null,'\t')+((eofRemoved)?endOfFileLable:'');
                 }
                 catch (e)
                 {
                     trace("The json model is not parsable");
                 }
-                return jsonModel ;
+                return jsonModel+((eofRemoved)?endOfFileLable:'') ;
             }
 
         private function updateServiceModelList():void
